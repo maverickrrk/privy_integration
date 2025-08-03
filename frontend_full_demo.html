@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privy-Hyperliquid Full Demo UI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body { background: #181c25; color: #e6e9f0; font-family: 'Roboto', Arial, sans-serif; margin: 0; }
+    .navbar { background: #23283b; display: flex; justify-content: center; box-shadow: 0 2px 8px #0006; }
+    .nav-tab { color: #b0b8d0; background: none; border: none; padding: 1.1em 2.5em; font-size: 1.15em; cursor: pointer; transition: color 0.2s; outline: none; }
+    .nav-tab.active, .nav-tab:hover { color: #fff; border-bottom: 3px solid #3dc6fd; background: #23283b; }
+    .container { max-width: 900px; margin: 40px auto; background: #22263a; border-radius: 15px; box-shadow: 0 4px 24px #0008; padding: 2.5em 2.5em 2em 2.5em; min-height: 600px; }
+    h1 { color: #3dc6fd; font-size: 2.1em; margin-bottom: 0.3em; letter-spacing: 1px; }
+    h2 { color: #3dc6fd; margin-top: 1.4em; }
+    .intro { color: #b0b8d0; margin-bottom: 1.5em; font-size: 1.13em; background: #23283b; border-radius: 8px; padding: 1em 1.5em; }
+    .card { background: #23283b; border-radius: 10px; margin-bottom: 2em; padding: 1.5em 1.2em 1.2em 1.2em; box-shadow: 0 2px 8px #0003; }
+    label { display: block; margin-top: 1em; font-weight: 500; color: #b0b8d0; letter-spacing: 0.02em; }
+    input, select, textarea { padding: 0.7em 0.8em; margin-top: 0.4em; width: 100%; background: #181c25; color: #e6e9f0; border: 1px solid #3dc6fd44; border-radius: 6px; font-size: 1em; transition: border 0.2s; }
+    input:focus, select:focus, textarea:focus { border: 1.5px solid #3dc6fd; outline: none; }
+    button { background: linear-gradient(90deg,#3dc6fd,#3643e6); color: #fff; border: none; border-radius: 6px; cursor: pointer; padding: 0.7em 1.2em; font-size: 1.1em; font-weight: 600; margin-top: 1.1em; transition: background 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px #0002; letter-spacing: 0.03em; }
+    button:hover { background: linear-gradient(90deg,#3643e6,#3dc6fd); box-shadow: 0 4px 16px #3dc6fd22; }
+    .result { margin-top: 1em; padding: 1em; background: #1a1f2e; border-radius: 7px; color: #e6e9f0; min-height: 2.2em; font-family: 'Fira Mono', 'Consolas', monospace; font-size: 1em; word-break: break-all; border-left: 3px solid #3dc6fd; box-shadow: 0 1px 4px #0002; transition: background 0.2s; }
+    .small { font-size: 0.93em; color: #7e8ca0; }
+    .flex-row { display: flex; flex-wrap: wrap; gap: 1.2em; }
+    .flex-col { flex: 1 1 350px; min-width: 320px; }
+    .spinner { display: inline-block; width: 1.4em; height: 1.4em; border: 3px solid #3dc6fd44; border-top: 3px solid #3dc6fd; border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-left: 0.5em; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 1100px) { .container { max-width: 99vw; padding: 1em; } .flex-row { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <div class="navbar">
+    <button class="nav-tab active" id="tab-users" onclick="switchTab('users')">Users</button>
+    <button class="nav-tab" id="tab-wallets" onclick="switchTab('wallets')">Wallets</button>
+    <button class="nav-tab" id="tab-market" onclick="switchTab('market')">Market</button>
+    <button class="nav-tab" id="tab-orders" onclick="switchTab('orders')">Orders</button>
+    <button class="nav-tab" id="tab-positions" onclick="switchTab('positions')">Positions</button>
+    <button class="nav-tab" id="tab-health" onclick="switchTab('health')">Health</button>
+  </div>
+  <div class="container">
+    <h1>Privy-Hyperliquid Full Demo</h1>
+    <p class="intro">
+      <b>Test all Privy-Hyperliquid API endpoints.</b> Use the tabs to manage users, wallets, market data, trading, and more.<br>
+      <span style="color:#3dc6fd;">All actions are live against your backend at <b>http://localhost:8900</b>.</span>
+    </p>
+    <!-- Users Tab -->
+    <div id="panel-users" class="tab-panel">
+      <div class="flex-row">
+        <div class="flex-col card">
+          <h2>Create User</h2>
+          <label>User ID <span class="small">(e.g. alice_123)</span></label>
+          <input id="user_id" type="text" placeholder="alice_123" />
+          <label>Email</label>
+          <input id="email" type="email" placeholder="alice@example.com" />
+          <button onclick="createUser()">Create User</button>
+          <div id="create_user_result" class="result"></div>
+        </div>
+        <div class="flex-col card">
+          <h2>List Users</h2>
+          <button onclick="listUsers()">List Users</button>
+          <div id="list_users_result" class="result"></div>
+        </div>
+        <div class="flex-col card">
+          <h2>Get User</h2>
+          <label>User ID</label>
+          <input id="get_user_id" type="text" placeholder="alice_123" />
+          <button onclick="getUser()">Get User</button>
+          <div id="get_user_result" class="result"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Wallets Tab -->
+    <div id="panel-wallets" class="tab-panel" style="display:none;">
+      <div class="flex-row">
+        <div class="flex-col card">
+          <h2>Create Wallet</h2>
+          <label>User ID</label>
+          <input id="wallet_user_id" type="text" placeholder="alice_123" />
+          <button onclick="createWallet()">Create Wallet</button>
+          <div id="create_wallet_result" class="result"></div>
+        </div>
+        <div class="flex-col card">
+          <h2>Get User Wallets</h2>
+          <label>User ID</label>
+          <input id="user_wallets_user_id" type="text" placeholder="alice_123" />
+          <button onclick="getUserWallets()">Get Wallets</button>
+          <div id="user_wallets_result" class="result"></div>
+        </div>
+        <div class="flex-col card">
+          <h2>Get Wallet Balance</h2>
+          <label>Wallet ID</label>
+          <input id="wallet_id" type="text" placeholder="(paste wallet id)" />
+          <button onclick="getWalletBalance()">Get Balance</button>
+          <div id="wallet_balance_result" class="result"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:2em;">
+        <h2>Deposit Instructions</h2>
+        <label>Wallet ID</label>
+        <input id="deposit_wallet_id" type="text" placeholder="(paste wallet id)" />
+        <button onclick="showDepositInstructions()">Show Deposit Instructions</button>
+        <div id="deposit_instructions_result" class="result"></div>
+        <div id="deposit_qr" style="text-align:center;margin-top:1em;"></div>
+        <div class="small" style="margin-top:1em;">
+          Send supported crypto (ETH, USDC, etc.) to your wallet address.<br>
+          Use any wallet or exchange to deposit funds. After deposit, check your balance above.<br>
+          <b>Funds are managed by Privy—private keys are never exposed.</b>
+        </div>
+      </div>
+    </div>
+    <!-- Market Tab -->
+    <div id="panel-market" class="tab-panel" style="display:none;">
+      <div class="flex-row">
+        <div class="flex-col card">
+          <h2>Get Market Data</h2>
+          <label>Symbol <span class="small">(e.g. ETH-USD)</span></label>
+          <input id="market_symbol" type="text" placeholder="ETH-USD" />
+          <button onclick="getMarketData()">Get Market Data</button>
+          <button style="margin-left:10px; background:#3643e6;" onclick="getAllSymbols()">Get All Symbols</button>
+          <div id="market_data_result" class="result"></div>
+          <div id="all_symbols_result" class="result" style="margin-top:1em;"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Orders Tab -->
+    <div id="panel-orders" class="tab-panel" style="display:none;">
+      <div class="flex-row">
+        <div class="flex-col card">
+          <h2>Place Order</h2>
+          <label>Wallet ID</label>
+          <input id="order_wallet_id" type="text" placeholder="wallet id" />
+          <label>Symbol</label>
+          <input id="order_symbol" type="text" placeholder="ETH-USD" />
+          <label>Side</label>
+          <select id="order_side"><option value="buy">Buy</option><option value="sell">Sell</option></select>
+          <label>Amount</label>
+          <input id="order_amount" type="number" placeholder="0.01" />
+          <button onclick="placeOrder()">Place Order</button>
+          <div id="place_order_result" class="result"></div>
+        </div>
+        <div class="flex-col card">
+          <h2>Cancel Order</h2>
+          <label>Wallet ID</label>
+          <input id="cancel_order_wallet_id" type="text" placeholder="wallet id" />
+          <label>Order ID</label>
+          <input id="cancel_order_id" type="text" placeholder="order id" />
+          <button onclick="cancelOrder()">Cancel Order</button>
+          <div id="cancel_order_result" class="result"></div>
+        </div>
+        <div class="flex-col card">
+          <h2>Get Open Orders</h2>
+          <label>Wallet ID</label>
+          <input id="open_orders_wallet_id" type="text" placeholder="wallet id" />
+          <button onclick="getOpenOrders()">Get Open Orders</button>
+          <div id="open_orders_result" class="result"></div>
+        </div>
+      </div>
+      <div class="flex-row">
+        <div class="flex-col card">
+          <h2>Cancel All Orders</h2>
+          <label>Wallet ID</label>
+          <input id="cancel_all_wallet_id" type="text" placeholder="wallet id" />
+          <button onclick="cancelAllOrders()">Cancel All Orders</button>
+          <div id="cancel_all_orders_result" class="result"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Positions Tab -->
+    <div id="panel-positions" class="tab-panel" style="display:none;">
+      <div class="flex-row">
+        <div class="flex-col card">
+          <h2>Get Positions</h2>
+          <label>Wallet ID</label>
+          <input id="positions_wallet_id" type="text" placeholder="wallet id" />
+          <button onclick="getPositions()">Get Positions</button>
+          <div id="positions_result" class="result"></div>
+        </div>
+        <div class="flex-col card">
+          <h2>Get Account Value</h2>
+          <label>Wallet ID</label>
+          <input id="account_wallet_id" type="text" placeholder="wallet id" />
+          <button onclick="getAccountValue()">Get Account Value</button>
+          <div id="account_result" class="result"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Health Tab -->
+    <div id="panel-health" class="tab-panel" style="display:none;">
+      <div class="card">
+        <h2>Health Check</h2>
+        <button onclick="getHealth()">Check Health</button>
+        <div id="health_result" class="result"></div>
+      </div>
+    </div>
+    <div id="toast" style="display:none;position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#23283b;color:#fff;padding:1em 2em;border-radius:7px;box-shadow:0 2px 12px #0008;z-index:9999;font-size:1.1em;letter-spacing:0.02em;border-left:4px solid #3dc6fd;animation:fadeIn 0.6s;">
+      <span id="toast-msg"></span>
+    </div>
+  </div>
+  <script>
+    const API_BASE = "http://localhost:8900";
+
+    // Fetch and display all supported symbols
+    async function getAllSymbols() {
+      const resultDiv = document.getElementById('all_symbols_result');
+      resultDiv.innerHTML = '<span class="spinner"></span> Fetching supported symbols...';
+      try {
+        const resp = await fetch(`${API_BASE}/market/symbols`);
+        const data = await resp.json();
+        if (data.success && Array.isArray(data.data)) {
+          if (data.data.length === 0) {
+            resultDiv.innerHTML = '<span style="color:#f66;">No symbols found.</span>';
+          } else {
+            resultDiv.innerHTML = '<b>Supported Symbols:</b><br>' +
+              '<div style="max-height:150px;overflow:auto;padding-top:0.5em;">' +
+              data.data.map(s => `<code style='margin-right:1em;'>${s}</code>`).join(' ') + '</div>';
+          }
+        } else {
+          resultDiv.innerHTML = '<span style="color:#f66;">Failed to fetch symbols.</span>';
+        }
+      } catch (e) {
+        resultDiv.innerHTML = `<span style='color:#f66;'>Error: ${e.message}</span>`;
+      }
+    }
+
+    // Tab switching
+    function switchTab(tab) {
+      document.querySelectorAll('.nav-tab').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('tab-' + tab).classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(panel => panel.style.display = 'none');
+      document.getElementById('panel-' + tab).style.display = '';
+    }
+    // Toast notification
+    function showToast(msg, timeout=2500) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, timeout);
+    }
+    function showSpinner(div) { div.innerHTML = '<span class="spinner"></span> Loading...'; }
+    // USERS
+    async function createUser() {
+      const user_id = document.getElementById('user_id').value;
+      const email = document.getElementById('email').value;
+      const resultDiv = document.getElementById('create_user_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/users`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ user_id, email })
+        });
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('User created!');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to create user', 3000); }
+    }
+    async function listUsers() {
+      const resultDiv = document.getElementById('list_users_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/users`);
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Users loaded');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to list users', 3000); }
+    }
+    async function getUser() {
+      const user_id = document.getElementById('get_user_id').value;
+      const resultDiv = document.getElementById('get_user_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/users/${encodeURIComponent(user_id)}`);
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('User loaded');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to get user', 3000); }
+    }
+    // WALLETS
+    async function createWallet() {
+      const user_id = document.getElementById('wallet_user_id').value;
+      const resultDiv = document.getElementById('create_wallet_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/users/${encodeURIComponent(user_id)}/wallets`, { method: 'POST' });
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Wallet created!');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to create wallet', 3000); }
+    }
+    async function getUserWallets() {
+      const user_id = document.getElementById('user_wallets_user_id').value;
+      const resultDiv = document.getElementById('user_wallets_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/users/${encodeURIComponent(user_id)}/wallets`);
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Wallets loaded');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to get wallets', 3000); }
+    }
+    async function getWalletBalance() {
+      const wallet_id = document.getElementById('wallet_id').value;
+      const resultDiv = document.getElementById('wallet_balance_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/wallets/${encodeURIComponent(wallet_id)}/balance`);
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Balance loaded');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to get balance', 3000); }
+    }
+
+    // Deposit Instructions
+    async function showDepositInstructions() {
+      const wallet_id = document.getElementById('deposit_wallet_id').value;
+      const resultDiv = document.getElementById('deposit_instructions_result');
+      const qrDiv = document.getElementById('deposit_qr');
+      resultDiv.textContent = '';
+      qrDiv.innerHTML = '';
+      if (!wallet_id) {
+        resultDiv.textContent = 'Please enter a wallet ID.';
+        return;
+      }
+      showSpinner(resultDiv);
+      try {
+        // Get all wallets for all users (find wallet by ID)
+        const usersRes = await fetch(`${API_BASE}/users`);
+        const usersObj = await usersRes.json();
+        const users = usersObj.data;
+        let foundWallet = null;
+        for (const user of users) {
+           const walletsRes = await fetch(`${API_BASE}/users/${encodeURIComponent(user.user_id)}/wallets`);
+           const walletsObj = await walletsRes.json();
+           const wallets = walletsObj.data;
+           if (Array.isArray(wallets)) {
+             for (const w of wallets) {
+              if (w.wallet_id === wallet_id) {
+                foundWallet = w;
+                break;
+              }
+            }
+          }
+          if (foundWallet) break;
+        }
+        if (foundWallet && foundWallet.address) {
+          resultDiv.innerHTML = `<b>Wallet Address:</b><br><span style='font-size:1.1em;'>${foundWallet.address}</span><br><span class='small'>Chain: ${foundWallet.chain_type || 'unknown'}</span>`;
+          // Generate QR code using Google Charts
+          const qrUrl = `https://chart.googleapis.com/chart?chs=180x180&cht=qr&chl=${encodeURIComponent(foundWallet.address)}`;
+          qrDiv.innerHTML = `<img src='${qrUrl}' alt='Wallet QR Code'><br><span class='small'>Scan to deposit</span>`;
+          showToast('Deposit address loaded!');
+        } else {
+          resultDiv.textContent = 'Wallet not found.';
+        }
+      } catch (e) {
+        resultDiv.textContent = 'Error: ' + e;
+      }
+    }
+
+    // MARKET
+    async function getMarketData() {
+      const symbol = document.getElementById('market_symbol').value;
+      const resultDiv = document.getElementById('market_data_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/market/${encodeURIComponent(symbol)}`);
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Market data loaded');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to get market data', 3000); }
+    }
+    // ORDERS
+    async function placeOrder() {
+      const wallet_id = document.getElementById('order_wallet_id').value;
+      const symbol = document.getElementById('order_symbol').value;
+      const side = document.getElementById('order_side').value;
+      const amount = document.getElementById('order_amount').value;
+      const resultDiv = document.getElementById('place_order_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/wallets/${encodeURIComponent(wallet_id)}/orders`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ symbol, side, size: parseFloat(amount) })
+        });
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Order placed!');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to place order', 3000); }
+    }
+    async function cancelOrder() {
+      const wallet_id = document.getElementById('cancel_order_wallet_id').value;
+      const order_id = document.getElementById('cancel_order_id').value;
+      const resultDiv = document.getElementById('cancel_order_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/wallets/${encodeURIComponent(wallet_id)}/orders`, {
+          method: 'DELETE', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ order_id })
+        });
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Order cancelled!');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to cancel order', 3000); }
+    }
+    async function getOpenOrders() {
+      const wallet_id = document.getElementById('open_orders_wallet_id').value;
+      const resultDiv = document.getElementById('open_orders_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/wallets/${encodeURIComponent(wallet_id)}/orders`);
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Open orders loaded');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to get open orders', 3000); }
+    }
+    async function cancelAllOrders() {
+      const wallet_id = document.getElementById('cancel_all_wallet_id').value;
+      const resultDiv = document.getElementById('cancel_all_orders_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/wallets/${encodeURIComponent(wallet_id)}/orders/all`, { method: 'DELETE' });
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('All orders cancelled!');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to cancel all orders', 3000); }
+    }
+    // POSITIONS & ACCOUNT
+    async function getPositions() {
+      const wallet_id = document.getElementById('positions_wallet_id').value;
+      const resultDiv = document.getElementById('positions_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/wallets/${encodeURIComponent(wallet_id)}/positions`);
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Positions loaded');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to get positions', 3000); }
+    }
+    async function getAccountValue() {
+      const wallet_id = document.getElementById('account_wallet_id').value;
+      const resultDiv = document.getElementById('account_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/wallets/${encodeURIComponent(wallet_id)}/account`);
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Account value loaded');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to get account value', 3000); }
+    }
+    // HEALTH
+    async function getHealth() {
+      const resultDiv = document.getElementById('health_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/health`);
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('API healthy');
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Health check failed', 3000); }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+{
+  "users": {
+    "demo_user_1754200337": {
+      "user_id": "demo_user_1754200337",
+      "email": "demo@example.com",
+      "wallets": [
+        "kpdxpt2tztz3x4ostzu5q9ye"
+      ],
+      "created_at": null
+    },
+    "demo_user_1754200448": {
+      "user_id": "demo_user_1754200448",
+      "email": "demo@example.com",
+      "wallets": [
+        "nvp75aku0sbgk500ooukhvkd"
+      ],
+      "created_at": null
+    },
+    "demo_user_1754200673": {
+      "user_id": "demo_user_1754200673",
+      "email": "demo@example.com",
+      "wallets": [
+        "zs1aqxqd5nnpbm7nmcrz7yim"
+      ],
+      "created_at": null
+    },
+    "rohAN": {
+      "user_id": "rohAN",
+      "email": "rohan@gmail.com",
+      "wallets": [],
+      "created_at": null
+    },
+    "rohankhamitkar": {
+      "user_id": "rohankhamitkar",
+      "email": "rohanstarts@gmail.com",
+      "wallets": [],
+      "created_at": null
+    },
+    "hariom": {
+      "user_id": "hariom",
+      "email": "hariom@gmail.com",
+      "wallets": [
+        "a36jq9d1pl4ef9nl523sikuv"
+      ],
+      "created_at": null
+    },
+    "ritesh": {
+      "user_id": "ritesh",
+      "email": "ritesh@gmai.com",
+      "wallets": [
+        "ukb3t1nstylrjkn4kvlsgutx"
+      ],
+      "created_at": null
+    },
+    "demo_user_1754206492": {
+      "user_id": "demo_user_1754206492",
+      "email": "demo@example.com",
+      "wallets": [
+        "r4xfx0pjhg98sf7hm9opv1x5"
+      ],
+      "created_at": null
+    },
+    "demo_user_1754208030": {
+      "user_id": "demo_user_1754208030",
+      "email": "demo@example.com",
+      "wallets": [
+        "ihg2gb8jihossx2mcos4iots"
+      ],
+      "created_at": null
+    },
+    "demo_user_1754208852": {
+      "user_id": "demo_user_1754208852",
+      "email": "demo@example.com",
+      "wallets": [
+        "fc4005qdmxufiyul1gtk74d5"
+      ],
+      "created_at": null
+    }
+  },
+  "wallets": {
+    "kpdxpt2tztz3x4ostzu5q9ye": {
+      "wallet_id": "kpdxpt2tztz3x4ostzu5q9ye",
+      "address": "0xf37E76dAC00098B9C772C77cC0Cd9132F498a4F3",
+      "chain_type": "ethereum",
+      "user_id": "demo_user_1754200337"
+    },
+    "nvp75aku0sbgk500ooukhvkd": {
+      "wallet_id": "nvp75aku0sbgk500ooukhvkd",
+      "address": "0x7854D91f29BA1CB8fdFA7dE8E2aABb784c028162",
+      "chain_type": "ethereum",
+      "user_id": "demo_user_1754200448"
+    },
+    "zs1aqxqd5nnpbm7nmcrz7yim": {
+      "wallet_id": "zs1aqxqd5nnpbm7nmcrz7yim",
+      "address": "0x3077d3A46f497475268a45636bD943687b4A9231",
+      "chain_type": "ethereum",
+      "user_id": "demo_user_1754200673"
+    },
+    "a36jq9d1pl4ef9nl523sikuv": {
+      "wallet_id": "a36jq9d1pl4ef9nl523sikuv",
+      "address": "0x983fb67cE179F0fF94B5666AaB04D7300AeDd76D",
+      "chain_type": "ethereum",
+      "user_id": "hariom"
+    },
+    "ukb3t1nstylrjkn4kvlsgutx": {
+      "wallet_id": "ukb3t1nstylrjkn4kvlsgutx",
+      "address": "0x32f68Bc38C58B3D4A2bca1259BcC76Fb02FDB42A",
+      "chain_type": "ethereum",
+      "user_id": "ritesh"
+    },
+    "r4xfx0pjhg98sf7hm9opv1x5": {
+      "wallet_id": "r4xfx0pjhg98sf7hm9opv1x5",
+      "address": "0x68B24C90870eda478341D2801a3B24eCc2C3D9f4",
+      "chain_type": "ethereum",
+      "user_id": "demo_user_1754206492"
+    },
+    "ihg2gb8jihossx2mcos4iots": {
+      "wallet_id": "ihg2gb8jihossx2mcos4iots",
+      "address": "0x1a726fb0FA859D684820521ceD60ba9e73D6137b",
+      "chain_type": "ethereum",
+      "user_id": "demo_user_1754208030"
+    },
+    "fc4005qdmxufiyul1gtk74d5": {
+      "wallet_id": "fc4005qdmxufiyul1gtk74d5",
+      "address": "0x41De87Ab0763731A2Ab76432Ea3D81ECEf8f75eb",
+      "chain_type": "ethereum",
+      "user_id": "demo_user_1754208852"
+    }
+  }
+}

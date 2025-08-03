@@ -1,0 +1,10 @@
+hyperliquid-python-sdk>=0.14.1
+privy-eth-account
+privy-client
+fastapi
+uvicorn
+python-dotenv
+pydantic
+requests
+eth-account
+web3
