@@ -224,9 +224,10 @@ async def get_market_data(
 async def place_order(
     wallet_id: str,
     order: OrderRequest,
-    trader: HyperliquidTrader = Depends(get_hyperliquid_trader)
+    trader: HyperliquidTrader = Depends(get_hyperliquid_trader),
+    privy_mgr: PrivyWalletManager = Depends(get_privy_manager)
 ):
-    """Place a trading order"""
+    """Place a trading order and send a real on-chain ETH transfer as proof"""
     try:
         wallet = db.get_wallet(wallet_id)
         if not wallet:
@@ -238,6 +239,7 @@ async def place_order(
         # Use provided price or 0 for market orders
         price = order.price if order.order_type == OrderType.LIMIT else 0
         
+        # Place the simulated order (off-chain logic)
         result = trader.place_order(
             wallet["address"],
             wallet_id,
@@ -247,15 +249,29 @@ async def place_order(
             price,
             order.order_type.value
         )
-        
+
+        # Send a real ETH transfer to self (on-chain proof)
+        # Value: 0.001 ETH (in wei)
+        eth_value_wei = int(0.001 * 1e18)
+        tx_result = privy_mgr.send_transaction(
+            wallet_id=wallet_id,
+            to_address=wallet["address"],
+            value=eth_value_wei,
+            chain_id="eip155:84532"  # Base Sepolia testnet (adjust as needed)
+        )
+        tx_hash = tx_result.get("result", {}).get("hash") or tx_result.get("result")
+
         return ApiResponse(
             success=True,
-            message="Order placed successfully",
-            data=result
+            message="Order placed and on-chain ETH transfer sent.",
+            data={
+                "order_result": result,
+                "onchain_tx_hash": tx_hash
+            }
         )
         
     except Exception as e:
-        logger.error(f"Failed to place order: {e}")
+        logger.error(f"Failed to place order or send on-chain tx: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.delete("/wallets/{wallet_id}/orders", response_model=ApiResponse)
