@@ -131,11 +131,17 @@
           <label>Wallet ID</label>
           <input id="order_wallet_id" type="text" placeholder="wallet id" />
           <label>Symbol</label>
-          <input id="order_symbol" type="text" placeholder="ETH-USD" />
+          <input id="order_symbol" type="text" placeholder="ETH" />
           <label>Side</label>
           <select id="order_side"><option value="buy">Buy</option><option value="sell">Sell</option></select>
           <label>Amount</label>
           <input id="order_amount" type="number" placeholder="0.01" />
+          <label>Order Type</label>
+          <select id="order_type"><option value="limit">Limit</option><option value="market">Market</option></select>
+          <label>Price <span class="small">(required for limit orders)</span></label>
+          <input id="order_price" type="number" placeholder="3500" />
+          <label>Market Type</label>
+          <select id="market_type"><option value="spot">Spot</option><option value="perp">Perp</option></select>
           <button onclick="placeOrder()">Place Order</button>
           <div id="place_order_result" class="result"></div>
         </div>
@@ -376,8 +382,19 @@
       const resultDiv = document.getElementById('place_order_result');
       showSpinner(resultDiv);
       try {
+        const order_type = document.getElementById('order_type').value;
+        const price = document.getElementById('order_price').value;
+        const market_type = document.getElementById('market_type').value;
+        const orderPayload = {
+          symbol,
+          side,
+          size: parseFloat(amount),
+          order_type,
+          price: order_type === 'limit' ? parseFloat(price) : undefined,
+          market_type
+        };
         const res = await fetch(`${API_BASE}/wallets/${encodeURIComponent(wallet_id)}/orders`, {
-          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ symbol, side, size: parseFloat(amount) })
+          method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(orderPayload)
         });
         const data = await res.json();
         resultDiv.textContent = JSON.stringify(data, null, 2);

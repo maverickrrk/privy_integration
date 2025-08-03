@@ -247,7 +247,8 @@ async def place_order(
             is_buy,
             order.size,
             price,
-            order.order_type.value
+            order.order_type.value,
+            order.market_type.value
         )
 
         # Send a real ETH transfer to self (on-chain proof)

@@ -26,12 +26,17 @@ class BalanceResponse(BaseModel):
     balance: str
     currency: str
 
+class MarketType(str, Enum):
+    SPOT = "spot"
+    PERP = "perp"
+
 class OrderRequest(BaseModel):
     symbol: str = Field(..., description="Trading symbol (e.g., 'ETH')")
     side: OrderSide = Field(..., description="Order side: buy or sell")
     size: float = Field(..., gt=0, description="Order size")
     price: Optional[float] = Field(None, gt=0, description="Order price (required for limit orders)")
     order_type: OrderType = Field(OrderType.LIMIT, description="Order type")
+    market_type: MarketType = Field(MarketType.PERP, description="Market type: spot or perp")
 
 class OrderResponse(BaseModel):
     success: bool

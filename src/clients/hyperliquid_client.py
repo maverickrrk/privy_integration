@@ -88,7 +88,7 @@ class HyperliquidTrader:
     
     def place_order(self, wallet_address: str, wallet_id: str, symbol: str, 
                    is_buy: bool, size: float, price: float, 
-                   order_type: str = "limit") -> Dict[str, Any]:
+                   order_type: str = "limit", market_type: str = "perp") -> Dict[str, Any]:
         """Place a trading order"""
         try:
             # Debug: print the symbol requested
@@ -124,15 +124,23 @@ class HyperliquidTrader:
             exchange = self.create_exchange_client(wallet_address, wallet_id)
             
             # Prepare order parameters
-            if order_type == "limit":
-                order_params = {"limit": {"tif": "Gtc"}}  # Good Till Cancel
+            if market_type == "spot":
+                # For spot, use the spot-specific order method if available, or pass a spot flag/parameter
+                # Here, we assume exchange.order() supports spot via an extra param (API may differ)
+                if order_type == "limit":
+                    order_params = {"limit": {"tif": "Gtc"}, "marketType": "spot"}
+                else:
+                    order_params = {"market": {}, "marketType": "spot"}
             else:
-                order_params = {"market": {}}
+                if order_type == "limit":
+                    order_params = {"limit": {"tif": "Gtc"}}
+                else:
+                    order_params = {"market": {}}
             
             # Place the order
             result = exchange.order(symbol, is_buy, size, price, order_params)
             
-            logger.info(f"Order placed for wallet {wallet_id}: {symbol} {'BUY' if is_buy else 'SELL'} {size} @ {price}")
+            logger.info(f"Order placed for wallet {wallet_id}: {symbol} {'BUY' if is_buy else 'SELL'} {size} @ {price} (market_type={market_type})")
             return result
             
         except Exception as e:
