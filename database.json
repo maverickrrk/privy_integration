@@ -75,6 +75,36 @@
         "fc4005qdmxufiyul1gtk74d5"
       ],
       "created_at": null
+    },
+    "demo_user_1754219251": {
+      "user_id": "demo_user_1754219251",
+      "email": "demo@example.com",
+      "wallets": [
+        "q34f2iw8ulz3ifcnh3x60zu3"
+      ],
+      "created_at": null
+    },
+    "aditya": {
+      "user_id": "aditya",
+      "email": "aditya@gmail.com",
+      "wallets": [],
+      "created_at": null
+    },
+    "demo_user_1754220268": {
+      "user_id": "demo_user_1754220268",
+      "email": "demo@example.com",
+      "wallets": [
+        "r9vuazt74zzmvgmqp9hjk9a8"
+      ],
+      "created_at": null
+    },
+    "vivek123": {
+      "user_id": "vivek123",
+      "email": "vivek@gmail.com",
+      "wallets": [
+        "b1yabb1283dxn7h5alens0fw"
+      ],
+      "created_at": null
     }
   },
   "wallets": {
@@ -125,6 +155,24 @@
       "address": "0x41De87Ab0763731A2Ab76432Ea3D81ECEf8f75eb",
       "chain_type": "ethereum",
       "user_id": "demo_user_1754208852"
+    },
+    "q34f2iw8ulz3ifcnh3x60zu3": {
+      "wallet_id": "q34f2iw8ulz3ifcnh3x60zu3",
+      "address": "0xc76958fb4721C8B85599016aa1A7aC10d29C7823",
+      "chain_type": "ethereum",
+      "user_id": "demo_user_1754219251"
+    },
+    "r9vuazt74zzmvgmqp9hjk9a8": {
+      "wallet_id": "r9vuazt74zzmvgmqp9hjk9a8",
+      "address": "0x244BF327dA3B550BE2f5eAdEEB4f534DC53c9DB2",
+      "chain_type": "ethereum",
+      "user_id": "demo_user_1754220268"
+    },
+    "b1yabb1283dxn7h5alens0fw": {
+      "wallet_id": "b1yabb1283dxn7h5alens0fw",
+      "address": "0x82DdA1e9ef8D30C1f0062a8A99a17dc02af2AE97",
+      "chain_type": "ethereum",
+      "user_id": "vivek123"
     }
   }
 }
