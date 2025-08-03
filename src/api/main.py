@@ -258,10 +258,17 @@ async def place_order(
             wallet_id=wallet_id,
             to_address=wallet["address"],
             value=eth_value_wei,
-            chain_id="eip155:84532"  # Base Sepolia testnet (adjust as needed)
+            chain_id="eip155:11155111"  # Ethereum Sepolia testnet
         )
-        tx_hash = tx_result.get("result", {}).get("hash") or tx_result.get("result")
-
+        tx_hash = None
+        if hasattr(tx_result, "hash"):
+            tx_hash = tx_result.hash
+        elif hasattr(tx_result, "result"):
+            tx_hash = tx_result.result
+        elif isinstance(tx_result, dict):
+            tx_hash = tx_result.get("result", {}).get("hash") or tx_result.get("result")
+        else:
+            tx_hash = str(tx_result)
         return ApiResponse(
             success=True,
             message="Order placed and on-chain ETH transfer sent.",
