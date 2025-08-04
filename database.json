@@ -102,7 +102,18 @@
       "user_id": "vivek123",
       "email": "vivek@gmail.com",
       "wallets": [
-        "b1yabb1283dxn7h5alens0fw"
+        "b1yabb1283dxn7h5alens0fw",
+        "hl_vivek123_bc06c33eaf91fdac",
+        "hl_vivek123_d4ffed3df5036663",
+        "hl_vivek123_c9ac5070d1deea42"
+      ],
+      "created_at": null
+    },
+    "aryan123": {
+      "user_id": "aryan123",
+      "email": "aryan@gmail,com",
+      "wallets": [
+        "ykoaljstwvv9ovvj7to9gqls"
       ],
       "created_at": null
     }
@@ -173,6 +184,36 @@
       "address": "0x82DdA1e9ef8D30C1f0062a8A99a17dc02af2AE97",
       "chain_type": "ethereum",
       "user_id": "vivek123"
+    },
+    "ykoaljstwvv9ovvj7to9gqls": {
+      "wallet_id": "ykoaljstwvv9ovvj7to9gqls",
+      "address": "0xE87A69d27fff5f849555869EDc408B1a7b495865",
+      "chain_type": "ethereum",
+      "user_id": "aryan123"
+    },
+    "hl_vivek123_bc06c33eaf91fdac": {
+      "wallet_id": "hl_vivek123_bc06c33eaf91fdac",
+      "address": "0x18F4d22a8D3060E00C7Ad9251E00d3D0a861a4c6",
+      "private_key": "0x387e971460a1cf80d7b75b1f5f2cf6ded7867e5d0840b2e145d3c0cb889965dd",
+      "chain_type": "ethereum",
+      "user_id": "vivek123",
+      "compatible_with": "hyperliquid"
+    },
+    "hl_vivek123_d4ffed3df5036663": {
+      "wallet_id": "hl_vivek123_d4ffed3df5036663",
+      "address": "0x792563c345bb55372BFCAcb18ca72C8082C8c45A",
+      "private_key": "0x7600a699764d9206bda1b6d7498f842d92bea4b26dc148633697d612dc5089ed",
+      "chain_type": "ethereum",
+      "user_id": "vivek123",
+      "compatible_with": "hyperliquid"
+    },
+    "hl_vivek123_c9ac5070d1deea42": {
+      "wallet_id": "hl_vivek123_c9ac5070d1deea42",
+      "address": "0x800b78b3C8e83Ecf2914f7dFea6d9E7e5bA078a5",
+      "private_key": "0x41deafe7bfd1f3e79bc6ba9bcb5b93bbebe6e6952f5a979cc37751c0338e068c",
+      "chain_type": "ethereum",
+      "user_id": "vivek123",
+      "compatible_with": "hyperliquid"
     }
   }
 }

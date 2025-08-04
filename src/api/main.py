@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 import logging
 from typing import List, Optional
 import uvicorn
@@ -120,7 +122,7 @@ async def list_users():
 @app.post("/users/{user_id}/wallets", response_model=ApiResponse)
 async def create_wallet(
     user_id: str,
-    privy_mgr: PrivyWalletManager = Depends(get_privy_manager)
+    privy_manager: PrivyWalletManager = Depends(get_privy_manager)
 ):
     """Create a new wallet for a user"""
     try:
@@ -130,7 +132,7 @@ async def create_wallet(
             raise HTTPException(status_code=404, detail="User not found")
         
         # Create wallet using Privy
-        wallet_data = privy_mgr.create_user_wallet(user_id)
+        wallet_data = privy_manager.create_user_wallet(user_id)
         
         # Store wallet in database
         db.add_wallet_to_user(user_id, wallet_data)
@@ -143,6 +145,34 @@ async def create_wallet(
         
     except Exception as e:
         logger.error(f"Failed to create wallet: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/users/{user_id}/hyperliquid-wallets", response_model=ApiResponse)
+async def create_hyperliquid_wallet(
+    user_id: str,
+    privy_manager: PrivyWalletManager = Depends(get_privy_manager)
+):
+    """Create a Hyperliquid-compatible wallet for a user"""
+    try:
+        # Check if user exists
+        user = db.get_user(user_id)
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        # Create Hyperliquid-compatible wallet
+        wallet_data = privy_manager.create_hyperliquid_wallet(user_id)
+        
+        # Store wallet in database
+        db.add_wallet_to_user(user_id, wallet_data)
+        
+        return ApiResponse(
+            success=True,
+            message="Hyperliquid-compatible wallet created successfully",
+            data=wallet_data
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to create Hyperliquid wallet: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/users/{user_id}/wallets", response_model=ApiResponse)
@@ -239,13 +269,24 @@ async def place_order(
         # Use provided price or 0 for market orders
         price = order.price if order.order_type == OrderType.LIMIT else 0
         
-        # Place the simulated order (off-chain logic)
+        # Calculate and validate minimum order value ($10 requirement)
+        actual_size = float(order.size)
+        if order.order_type == OrderType.LIMIT and price > 0:
+            order_value = actual_size * float(price)
+            logger.info(f"Order value calculation: {actual_size} × {price} = ${order_value:.2f}")
+            if order_value < 10.0:
+                # Adjust size to meet minimum $10 requirement
+                actual_size = 10.0 / float(price)
+                logger.info(f"Adjusting order size from {order.size} to {actual_size:.6f} to meet $10 minimum")
+                logger.info(f"New order value: {actual_size:.6f} × {price} = ${actual_size * float(price):.2f}")
+        
+        # Place the simulated order (off-chain logic) with adjusted size
         result = trader.place_order(
             wallet["address"],
             wallet_id,
             order.symbol,
             is_buy,
-            order.size,
+            actual_size,  # Use the adjusted size
             price,
             order.order_type.value,
             order.market_type.value
@@ -403,6 +444,45 @@ async def get_account_value(
     except Exception as e:
         logger.error(f"Failed to get account info: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+# Transfer endpoint
+@app.post("/transfer")
+async def transfer_funds(
+    transfer_request: dict,
+    privy_manager: PrivyWalletManager = Depends(get_privy_manager)
+):
+    """Transfer ETH from one wallet to another"""
+    try:
+        wallet_id = transfer_request.get("wallet_id")
+        to_address = transfer_request.get("to_address")
+        amount_eth = transfer_request.get("amount_eth", 0.01)  # Default 0.01 ETH
+        chain_id = transfer_request.get("chain_id", "eip155:11155111")  # Sepolia testnet
+        
+        # Convert ETH to wei (1 ETH = 10^18 wei)
+        value_wei = int(amount_eth * 10**18)
+        
+        result = privy_manager.send_transaction(
+            wallet_id=wallet_id,
+            to_address=to_address,
+            value=value_wei,
+            chain_id=chain_id
+        )
+        
+        return APIResponse(
+            success=True,
+            message="Transfer initiated successfully",
+            data=result
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to transfer funds: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# Frontend route
+@app.get("/")
+async def serve_frontend():
+    """Serve the frontend HTML file"""
+    return FileResponse("frontend_full_demo.html")
 
 # Health check endpoint
 @app.get("/health")

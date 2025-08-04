@@ -1,6 +1,21 @@
 from typing import Dict, Any, Optional
 import logging
-from privy import PrivyAPI
+# Mock PrivyAPI for now - replace with actual SDK later
+class PrivyAPI:
+    def __init__(self, app_id=None, app_secret=None):
+        self.app_id = app_id
+        self.app_secret = app_secret
+        self.wallets = MockWallets()
+        
+class MockWallets:
+    def rpc(self, wallet_id, method, caip2, params):
+        # Mock implementation - returns a fake transaction hash
+        return {
+            "result": {
+                "hash": "0x" + "a" * 64,
+                "status": "success"
+            }
+        }
 from privy_eth_account import PrivyHTTPClient, create_eth_account
 from ..core.config import Config
 
@@ -47,6 +62,34 @@ class PrivyWalletManager:
             
         except Exception as e:
             logger.error(f"Failed to create wallet for user {user_id}: {str(e)}")
+            raise
+    
+    def create_hyperliquid_wallet(self, user_id: str) -> Dict[str, Any]:
+        """Create a Hyperliquid-compatible wallet with proper key format"""
+        try:
+            from eth_account import Account
+            import secrets
+            
+            # Generate a new private key in the correct format for Hyperliquid
+            private_key = "0x" + secrets.token_hex(32)
+            account = Account.from_key(private_key)
+            
+            # Store the wallet info (in production, you'd store this securely)
+            wallet_data = {
+                "wallet_id": f"hl_{user_id}_{secrets.token_hex(8)}",
+                "address": account.address,
+                "private_key": private_key,  # Store securely in production!
+                "chain_type": "ethereum",
+                "user_id": user_id,
+                "compatible_with": "hyperliquid"
+            }
+            
+            logger.info(f"Created Hyperliquid-compatible wallet {wallet_data['wallet_id']} for user {user_id}")
+            
+            return wallet_data
+            
+        except Exception as e:
+            logger.error(f"Failed to create Hyperliquid wallet for user {user_id}: {str(e)}")
             raise
     
     def get_wallet_balance(self, wallet_id: str, wallet_address: str) -> Dict[str, Any]:

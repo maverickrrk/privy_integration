@@ -77,8 +77,18 @@
           <h2>Create Wallet</h2>
           <label>User ID</label>
           <input id="wallet_user_id" type="text" placeholder="alice_123" />
-          <button onclick="createWallet()">Create Wallet</button>
+          <button onclick="createWallet()">Create Regular Wallet</button>
           <div id="create_wallet_result" class="result"></div>
+        </div>
+        <div class="flex-col card">
+          <h2>Create Hyperliquid Wallet</h2>
+          <label>User ID</label>
+          <input id="hl_wallet_user_id" type="text" placeholder="vivek123" />
+          <button onclick="createHyperliquidWallet()" style="background: linear-gradient(90deg,#ff6b35,#f7931e);">Create Hyperliquid Wallet</button>
+          <div id="create_hl_wallet_result" class="result"></div>
+          <div class="small" style="margin-top:1em; color: #ff9500;">
+            ✨ <b>Hyperliquid-Compatible:</b> Creates wallets with proper key format for spot trading on Hyperliquid testnet.
+          </div>
         </div>
         <div class="flex-col card">
           <h2>Get User Wallets</h2>
@@ -291,6 +301,22 @@
         resultDiv.textContent = JSON.stringify(data, null, 2);
         showToast('Wallet created!');
       } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to create wallet', 3000); }
+    }
+    async function createHyperliquidWallet() {
+      const user_id = document.getElementById('hl_wallet_user_id').value;
+      const resultDiv = document.getElementById('create_hl_wallet_result');
+      showSpinner(resultDiv);
+      try {
+        const res = await fetch(`${API_BASE}/users/${encodeURIComponent(user_id)}/hyperliquid-wallets`, { method: 'POST' });
+        const data = await res.json();
+        resultDiv.textContent = JSON.stringify(data, null, 2);
+        showToast('Hyperliquid wallet created! 🚀');
+        // Auto-populate wallet ID in other forms for convenience
+        if (data.success && data.data && data.data.wallet_id) {
+          document.getElementById('wallet_id').value = data.data.wallet_id;
+          document.getElementById('order_wallet_id').value = data.data.wallet_id;
+        }
+      } catch (e) { resultDiv.textContent = 'Error: ' + e; showToast('Failed to create Hyperliquid wallet', 3000); }
     }
     async function getUserWallets() {
       const user_id = document.getElementById('user_wallets_user_id').value;
